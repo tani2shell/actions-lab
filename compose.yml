@@ -1,0 +1,35 @@
+# actions-lab "ForgeCI" — CI/CD script-injection + runner-token surface
+# UGC spec: 2 vCPU / 2 GB / 20 GB total. Isolated net, no home-LAN bridge.
+name: actions-lab
+services:
+  web:
+    build: ./web
+    container_name: actions-lab-web
+    environment:
+      - LOCAL_FLAG=${LOCAL_FLAG:?LOCAL_FLAG missing}
+      - FORGECI_RUNNER_TOKEN=${RUNNER_TOKEN:?RUNNER_TOKEN missing}
+      - QUEUE_URL=http://queue:8081
+    ports:
+      - "18930:8080"
+    networks: [forgeci_net]
+    cpus: "1.0"
+    mem_limit: 1g
+    restart: unless-stopped
+  queue:
+    build: ./queue
+    container_name: actions-lab-queue
+    environment:
+      - PROOF_FLAG=${PROOF_FLAG:?PROOF_FLAG missing}
+      - RUNNER_TOKEN=${RUNNER_TOKEN:?RUNNER_TOKEN missing}
+    ports:
+      - "18931:8081"
+    networks: [forgeci_net]
+    cpus: "1.0"
+    mem_limit: 1g
+    restart: unless-stopped
+networks:
+  forgeci_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.7.0/24

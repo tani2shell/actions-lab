@@ -1,0 +1,11 @@
+FROM python:3.12-slim
+ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+RUN useradd -m -u 1000 ci \
+ && mkdir -p /srv/forgeci && chown ci:ci /srv/forgeci
+WORKDIR /app
+RUN pip install --no-cache-dir flask==3.0.3
+COPY app.py /app/app.py
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+EXPOSE 8080
+ENTRYPOINT ["/app/entrypoint.sh"]

@@ -1,0 +1,12 @@
+# factory/vault artifacts — never commit
+*.flag
+audit-key*.json
+.env
+*.log
+.DS_Store
+uploads/
+__pycache__/
+*.pyc
+disk.qcow2
+seed.iso
+vars.fd
